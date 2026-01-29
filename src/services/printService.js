@@ -31,6 +31,23 @@ class PrintService {
 
         logger.startup(`PrintService initialized in ${config.PRINT_MODE} mode`);
         logger.info(`PDF output directory: ${this.pdfOutputDir}`);
+
+        // SPEED OPTIMIZATION: Pre-warm browser on startup for instant first print
+        this.prewarmBrowser();
+    }
+
+    /**
+     * Pre-warm browser (initializes in background on startup)
+     */
+    async prewarmBrowser() {
+        setTimeout(async () => {
+            try {
+                await this.init();
+                logger.info('✅ Browser pre-warmed and ready for instant printing');
+            } catch (err) {
+                logger.warn('Browser pre-warm failed - will initialize on first print');
+            }
+        }, 2000); // Start after 2 seconds to avoid blocking service startup
     }
 
     /**
@@ -67,16 +84,20 @@ class PrintService {
     }
 
     /**
-     * Initialize browser
+     * Initialize browser (keeps alive for multiple print jobs)
      */
     async init() {
-        if (!this.browser) {
+        if (!this.browser || !this.browser.isConnected()) {
             this.validateChrome();
 
             logger.startup('Initializing Puppeteer browser...');
 
             try {
-                this.browser = await puppeteer.launch(config.PUPPETEER_CONFIG);
+                this.browser = await puppeteer.launch({
+                    ...config.PUPPETEER_CONFIG,
+                    // Keep browser alive for faster subsequent prints
+                    timeout: 60000
+                });
                 logger.startup('✅ Browser initialized successfully');
             } catch (err) {
                 logger.serviceError('Failed to launch browser', err);
@@ -91,7 +112,7 @@ class PrintService {
     }
 
     /**
-     * Generate PDF from HTML
+     * Generate PDF from HTML (optimized for speed)
      */
     async generatePDF(htmlContent, documentTitle) {
         await this.init();
@@ -101,23 +122,33 @@ class PrintService {
         const page = await this.browser.newPage();
 
         try {
-            // Load HTML content
-            // Use 'domcontentloaded' instead of 'networkidle0' for static HTML - much faster!
+            // SPEED OPTIMIZATION: Use domcontentloaded and minimal timeout
             await page.setContent(htmlContent, {
-                waitUntil: 'domcontentloaded',  // Don't wait for network - we have static HTML
-                timeout: 30000  // 30 seconds fallback timeout
+                waitUntil: 'domcontentloaded',  // Don't wait for network - static HTML only
+                timeout: 5000  // Reduced to 5 seconds - should be instant for static HTML
             });
 
-            // Generate PDF
+            // Get dynamic settings
+            const layout = settingsManager.getPrintLayout();
+            const margins = settingsManager.getMargins();
+
+            // SPEED OPTIMIZATION: Generate PDF immediately, no waiting
             const pdfBuffer = await page.pdf({
-                ...config.PRINTER_CONFIG,
-                printBackground: true
+                format: 'A4',
+                width: layout.pageWidth,
+                margin: margins,
+                printBackground: true,
+                preferCSSPageSize: true,
+                scale: layout.scale,
+                displayHeaderFooter: false,
+                timeout: 10000  // Faster PDF generation timeout
             });
 
             logger.info(`PDF generated: ${(pdfBuffer.length / 1024).toFixed(2)} KB`);
 
             return pdfBuffer;
         } finally {
+            // Close page immediately to free resources
             await page.close();
         }
     }

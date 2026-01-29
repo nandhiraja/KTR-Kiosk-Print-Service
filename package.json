@@ -9,7 +9,9 @@
         "install-service": "node scripts/install-service.js",
         "install-service-v2": "node scripts/install_windows_service.js",
         "uninstall-service": "node scripts/uninstall-service.js",
-        "package": "pkg ."
+        "package": "pkg .",
+        "build": "pkg . --targets node18-win-x64 --output kiosk-print-service.exe",
+        "build:icon": "pkg . --targets node18-win-x64 --output kiosk-print-service.exe && rcedit kiosk-print-service.exe --set-icon assets/logo.ico"
     },
     "bin": "src/server.js",
     "pkg": {
@@ -38,5 +40,8 @@
         "puppeteer": "^21.6.1",
         "node-windows": "^1.0.0-beta.8",
         "pdf-to-printer": "^1.6.1"
+    },
+    "devDependencies": {
+        "rcedit": "^4.0.1"
     }
 }

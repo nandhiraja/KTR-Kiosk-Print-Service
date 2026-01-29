@@ -68,6 +68,49 @@ router.post('/api/settings/printer', (req, res) => {
     }
 });
 
+// API: Get Print Layout Settings
+router.get('/api/settings/print-layout', (req, res) => {
+    try {
+        const layout = settingsManager.getPrintLayout();
+        res.json({
+            success: true,
+            layout
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// API: Update Print Layout Settings
+router.post('/api/settings/print-layout', (req, res) => {
+    try {
+        const { scale, pageWidth, marginTop, marginRight, marginBottom, marginLeft } = req.body;
+
+        const updates = {};
+        if (scale !== undefined) updates.scale = parseFloat(scale);
+        if (pageWidth !== undefined) updates.pageWidth = pageWidth;
+        if (marginTop !== undefined) updates.marginTop = marginTop;
+        if (marginRight !== undefined) updates.marginRight = marginRight;
+        if (marginBottom !== undefined) updates.marginBottom = marginBottom;
+        if (marginLeft !== undefined) updates.marginLeft = marginLeft;
+
+        if (settingsManager.setPrintLayout(updates)) {
+            logger.info(`Print layout updated: ${JSON.stringify(updates)}`);
+            res.json({ success: true, layout: settingsManager.getPrintLayout() });
+        } else {
+            res.status(500).json({ success: false, error: 'Failed to save settings' });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // API: Get Recent Logs
 router.get('/api/logs', (req, res) => {
     const logs = logger.getRecentLogs();
