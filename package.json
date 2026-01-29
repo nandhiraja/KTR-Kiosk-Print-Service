@@ -1,0 +1,42 @@
+{
+    "name": "restaurant-kiosk-print-service",
+    "version": "1.0.0",
+    "description": "Silent printing service for restaurant kiosk - handles all bill/KOT printing",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node src/server.js",
+        "dev": "node src/server.js",
+        "install-service": "node scripts/install-service.js",
+        "install-service-v2": "node scripts/install_windows_service.js",
+        "uninstall-service": "node scripts/uninstall-service.js",
+        "package": "pkg ."
+    },
+    "bin": "src/server.js",
+    "pkg": {
+        "scripts": [
+            "src/**/*.js"
+        ],
+        "assets": [
+            "src/templates/**/*",
+            "node_modules/pdf-to-printer/dist/SumatraPDF.exe"
+        ],
+        "targets": [
+            "node18-win-x64"
+        ]
+    },
+    "keywords": [
+        "printing",
+        "kiosk",
+        "restaurant",
+        "thermal-printer"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.2",
+        "cors": "^2.8.5",
+        "puppeteer": "^21.6.1",
+        "node-windows": "^1.0.0-beta.8",
+        "pdf-to-printer": "^1.6.1"
+    }
+}

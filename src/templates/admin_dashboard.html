@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Service Manager</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.875em;
+            font-weight: 500;
+        }
+
+        .status-running {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-stopped {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background-color: var(--surface);
+            font-size: 1em;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .log-container {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 6px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 4px;
+        }
+
+        .log-time {
+            color: #94a3b8;
+            margin-right: 8px;
+        }
+
+        .log-level {
+            display: inline-block;
+            width: 60px;
+            font-weight: bold;
+        }
+
+        .log-level.INFO {
+            color: #60a5fa;
+        }
+
+        .log-level.WARN {
+            color: #fbbf24;
+        }
+
+        .log-level.ERROR {
+            color: #f87171;
+        }
+
+        .log-level.PRINT {
+            color: #34d399;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            background: #333;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        #refresh-status {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Print Service Manager</h1>
+            <span id="refresh-status">Auto-refreshing logs...</span>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Service Status
+                <span id="service-status" class="status-badge status-stopped">Checking...</span>
+            </div>
+            <div id="service-details">
+                <small>Uptime: <span id="uptime">-</span></small>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Printer Configuration
+            </div>
+            <div class="form-group">
+                <label for="printer-select">Select Target Printer</label>
+                <select id="printer-select" disabled>
+                    <option value="">Loading printers...</option>
+                </select>
+            </div>
+            <button id="save-printer-btn" onclick="savePrinter()" disabled>Save Configuration</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Live Logs
+                <button onclick="fetchLogs()" style="font-size: 0.8em; padding: 4px 8px;">Refresh Now</button>
+            </div>
+            <div class="log-container" id="log-container">
+                <!-- Logs will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Settings saved</div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentPrinter = null;
+
+        async function init() {
+            await Promise.all([
+                fetchStatus(),
+                fetchPrinters(),
+                fetchLogs()
+            ]);
+
+            // Poll for logs every 2 seconds
+            setInterval(fetchLogs, 2000);
+            // Poll status every 30 seconds
+            setInterval(fetchStatus, 30000);
+        }
+
+        async function fetchStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/status`);
+                const data = await res.json();
+
+                const badge = document.getElementById('service-status');
+                if (data.status === 'running') {
+                    badge.className = 'status-badge status-running';
+                    badge.textContent = 'Running';
+                } else {
+                    badge.className = 'status-badge status-stopped';
+                    badge.textContent = 'Stopped';
+                }
+
+                if (data.uptime) {
+                    const minutes = Math.floor(data.uptime / 60000);
+                    document.getElementById('uptime').textContent = `${minutes} minutes`;
+                }
+            } catch (e) {
+                console.error('Status check failed', e);
+            }
+        }
+
+        async function fetchPrinters() {
+            try {
+                const res = await fetch(`${API_BASE}/printers`);
+                const data = await res.json();
+
+                const select = document.getElementById('printer-select');
+                select.innerHTML = '';
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Use System Default --';
+                select.appendChild(defaultOption);
+                console.log(data.printers);
+                data.printers.forEach(p => {
+                    // The backend returns an array of objects.
+                    // Depending on the library version, it might be p.name or p.deviceId.
+                    // In your JSON: "name": "Microsoft Print to PDF"
+                    const name = p.name || p.deviceId || 'Unknown Device';
+
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name + (name === data.currentPrinter ? ' (Current)' : '');
+                    select.appendChild(opt);
+                });
+
+                if (data.currentPrinter) {
+                    select.value = data.currentPrinter;
+                }
+
+                select.disabled = false;
+                document.getElementById('save-printer-btn').disabled = false;
+
+            } catch (e) {
+                console.error('Failed to load printers', e);
+                const select = document.getElementById('printer-select');
+                select.innerHTML = '<option>Error loading printers</option>';
+            }
+        }
+
+        async function savePrinter() {
+            const select = document.getElementById('printer-select');
+            const printerName = select.value || null;
+            const btn = document.getElementById('save-printer-btn');
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const res = await fetch(`${API_BASE}/settings/printer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ printerName })
+                });
+
+                if (res.ok) {
+                    showToast('Printer configuration saved!');
+                } else {
+                    showToast('Failed to save configuration');
+                }
+            } catch (e) {
+                showToast('Error saving configuration');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Configuration';
+            }
+        }
+
+        async function fetchLogs() {
+            try {
+                const res = await fetch(`${API_BASE}/logs`);
+                const data = await res.json();
+
+                const container = document.getElementById('log-container');
+                container.innerHTML = data.logs.map(log => {
+                    const time = new Date(log.timestamp).toLocaleTimeString();
+                    return `
+                        <div class="log-entry">
+                            <span class="log-time">${time}</span>
+                            <span class="log-level ${log.level}">${log.level}</span>
+                            <span>${log.message}</span>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error('Failed to fetch logs', e);
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
