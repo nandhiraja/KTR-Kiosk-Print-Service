@@ -25,8 +25,12 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
       <title>Coffee KOT - ${kot_code}</title>
       <style>
         @page { 
-          size: 80mm 160mm; 
+          size: 80mm auto; 
           margin: 0; 
+        }
+        html {
+          margin: 0;
+          padding: 0;
         }
         * { 
           margin: 0; 
@@ -35,14 +39,17 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
         }
         body { 
           font-family: 'Courier New', Courier, monospace; 
-          font-size: 9px; 
-          line-height: 1.2; 
-          padding: 4px; 
-          margin: 10px; 
+          font-size: 10px; 
+          font-weight: 500;
+          line-height: 1.3; 
+          padding: 2mm; 
+          margin: 0;
+          width: 80mm;
         }
         .page { 
-          width: 76mm; 
-          margin: 0 auto; 
+          width: 100%; 
+          margin: 0;
+          padding: 0;
         }
         .center { 
           text-align: center; 
@@ -50,8 +57,8 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
 
         /* Header */
         .restaurant-name { 
-          font-size: 11px; 
-          font-weight: bold; 
+          font-size: 12px; 
+          font-weight: 900; 
           margin-bottom: 0px; 
         }
 
@@ -93,14 +100,15 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
 
         /* Info Lines */
         .info-line { 
-          font-size: 9px; 
+          font-size: 10px; 
+          font-weight: 500;
           margin: 1px 0; 
           line-height: 1.4; 
         }
         .label { 
           width: 75px; 
           display: inline-block; 
-          font-weight: normal; 
+          font-weight: 600; 
         }
 
         /* Divider */
@@ -111,14 +119,15 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
 
         /* Items */
         .items-header { 
-          font-weight: bold; 
+          font-weight: 700; 
           border-bottom: 1px dashed #000; 
           padding: 2px 0 3px 0; 
-          font-size: 9px; 
+          font-size: 10px; 
           margin-top: 2px; 
         }
         .item-row { 
-          font-size: 9px; 
+          font-size: 10px; 
+          font-weight: 500;
           margin: 2px 0; 
           line-height: 1.4; 
           border-bottom: 1px dashed #000; 
@@ -133,8 +142,8 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
 
         /* Instruction */
         .instruction-title { 
-          font-size: 10px; 
-          font-weight: bold; 
+          font-size: 11px; 
+          font-weight: 700; 
           margin-top: 6px; 
           text-align: center; 
         }

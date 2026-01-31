@@ -21,8 +21,12 @@ const generateRestaurantBill = (
       <title>Bill - ${kot_code}</title>
       <style>
         @page { 
-          size: 58mm 200mm; 
+          size: 58mm auto; 
           margin: 0; 
+        }
+        html {
+          margin: 0;
+          padding: 0;
         }
         * { 
           margin: 0; 
@@ -31,13 +35,17 @@ const generateRestaurantBill = (
         }
         body { 
           font-family: 'Courier New', Courier, monospace; 
-          font-size: 9px; 
-          line-height: 1.2; 
-          padding: 3px; 
+          font-size: 10px; 
+          font-weight: 500;
+          line-height: 1.3; 
+          padding: 2mm; 
+          margin: 0;
+          width: 58mm;
         }
         .page { 
-          width: 55mm; 
-          margin: 0 auto; 
+          width: 100%; 
+          margin: 0;
+          padding: 0;
         }
         .center { 
           text-align: center; 
@@ -45,8 +53,8 @@ const generateRestaurantBill = (
 
         /* Header */
         .restaurant-name-top { 
-          font-size: 10px; 
-          font-weight: bold; 
+          font-size: 11px; 
+          font-weight: 900; 
           margin-bottom: 1px; 
         }
         .tagline { 
@@ -57,7 +65,11 @@ const generateRestaurantBill = (
         /* Logo */
         .logo-wrapper { 
           height: 24px; 
-          margin: 2px auto; 
+          margin: 3px auto; 
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         .logo {
           width: 42px;
@@ -69,8 +81,8 @@ const generateRestaurantBill = (
 
         /* Branch Info */
         .branch-name { 
-          font-size: 9px; 
-          font-weight: bold; 
+          font-size: 10px; 
+          font-weight: 700; 
           margin: 2px 0 1px 0; 
         }
         .address-line { 
@@ -91,15 +103,16 @@ const generateRestaurantBill = (
 
         /* KOT Code */
         .kot-block { 
-          font-size: 9px; 
-          font-weight: bold; 
+          font-size: 10px; 
+          font-weight: 700; 
           text-align: center; 
           margin: 1px 0; 
         }
 
         /* Bill Info */
         .bill-info { 
-          font-size: 8px; 
+          font-size: 9px; 
+          font-weight: 500;
           margin: 0.5px 0; 
           line-height: 1.4; 
         }
@@ -107,16 +120,17 @@ const generateRestaurantBill = (
         /* Items Table */
         .items-header { 
           display: flex; 
-          font-weight: bold; 
+          font-weight: 700; 
           border-bottom: 1px solid #000; 
           padding: 1.5px 0; 
-          font-size: 8px; 
+          font-size: 9px; 
           margin-top: 1px; 
         }
         .item-row { 
           display: flex; 
           margin: 1px 0; 
-          font-size: 8px; 
+          font-size: 9px; 
+          font-weight: 500;
           line-height: 1.3; 
         }
         .col-desc { 
@@ -146,15 +160,16 @@ const generateRestaurantBill = (
         .total-row { 
           display: flex; 
           justify-content: space-between; 
-          font-size: 8px; 
+          font-size: 9px; 
+          font-weight: 500;
           margin: 0.5px 0; 
           line-height: 1.4; 
         }
         .grand-total { 
           border-top: 1px solid #000; 
           padding-top: 2px; 
-          font-size: 9px; 
-          font-weight: bold; 
+          font-size: 10px; 
+          font-weight: 900; 
           margin-top: 2px; 
           display: flex; 
           justify-content: space-between; 
