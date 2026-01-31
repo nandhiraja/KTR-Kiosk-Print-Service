@@ -20,138 +20,162 @@ const generateRestaurantBill = (
     <head>
       <title>Bill - ${kot_code}</title>
       <style>
-             @page {
-          size: 58mm auto;  /* width 58mm for thermal roll paper, height auto */
-          margin: 0;  /* Remove all margins to eliminate white space */
+        @page { 
+          size: 58mm 200mm; 
+          margin: 0; 
         }
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+        * { 
+          margin: 0; 
+          padding: 0; 
+          box-sizing: border-box; 
         }
-        body {
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 12px;
-          line-height: 1.4;
-          margin: 0;
-          padding: 2px;  /* Minimal padding */
+        body { 
+          font-family: 'Courier New', Courier, monospace; 
+          font-size: 9px; 
+          line-height: 1.2; 
+          padding: 3px; 
         }
-        .page {
-          width: 58mm;
-          margin: 0 auto;
-          padding: 2px 4px 4px;  /* Minimal top/side padding */
+        .page { 
+          width: 55mm; 
+          margin: 0 auto; 
         }
-        .center { text-align: center; }
-
-        /* Header text */
-        .restaurant-name-top {
-          font-size: 14px;
-          font-weight: bold;
-          margin-bottom: 2px;
-        }
-        .tagline {
-          font-size: 11px;
-          margin-bottom: 6px;
+        .center { 
+          text-align: center; 
         }
 
-        /* Logo block */
-        .logo-wrapper {
-          margin: 4px 0 3px;
-          display: flex;
-          justify-content: center;
+        /* Header */
+        .restaurant-name-top { 
+          font-size: 10px; 
+          font-weight: bold; 
+          margin-bottom: 1px; 
+        }
+        .tagline { 
+          font-size: 7.5px; 
+          margin-bottom: 3px; 
+        }
+
+        /* Logo */
+        .logo-wrapper { 
+          height: 24px; 
+          margin: 2px auto; 
         }
         .logo {
-          width: 60px;
-          height: 30px;
+          width: 42px;
+          height: 22px;
           object-fit: contain;
+          margin: 0 auto;
+          display: block;
         }
 
-        .branch-name {
-          font-size: 12px;
-          font-weight: bold;
-          margin-top: 4px;
+        /* Branch Info */
+        .branch-name { 
+          font-size: 9px; 
+          font-weight: bold; 
+          margin: 2px 0 1px 0; 
         }
-        .address-line {
-          font-size: 10px;
-          line-height: 1.3;
-        }
-        .section-title {
-          font-size: 11px;
-          font-weight: bold;
-          margin-top: 6px;
+        .address-line { 
+          font-size: 7.5px; 
+          line-height: 1.3; 
+          margin: 0; 
         }
 
-        .divider-full {
-          border-bottom: 1px solid #000;
-          margin: 6px 0;
+        /* Dividers */
+        .divider-full { 
+          border-bottom: 2px solid #000; 
+          margin: 2px 0; 
+        }
+        .divider-thin { 
+          border-bottom: 1px solid #000; 
+          margin: 2px 0; 
         }
 
-        .bill-info {
-          font-size: 11px;
-          margin: 2px 0;
+        /* KOT Code */
+        .kot-block { 
+          font-size: 9px; 
+          font-weight: bold; 
+          text-align: center; 
+          margin: 1px 0; 
         }
 
-        /* KOT / KDS block */
-        .kot-block {
-          font-size: 11px;
-          text-align: center;
-          margin: 5px 0;
-          font-weight: bold;
+        /* Bill Info */
+        .bill-info { 
+          font-size: 8px; 
+          margin: 0.5px 0; 
+          line-height: 1.4; 
         }
 
-        /* Items table */
-        .items-header,
-        .item-row {
-          display: flex;
-          font-size: 11px;
+        /* Items Table */
+        .items-header { 
+          display: flex; 
+          font-weight: bold; 
+          border-bottom: 1px solid #000; 
+          padding: 1.5px 0; 
+          font-size: 8px; 
+          margin-top: 1px; 
         }
-        .items-header {
-          font-weight: bold;
-          margin-top: 5px;
-          padding-bottom: 2px;
-          border-bottom: 1px solid #000;
+        .item-row { 
+          display: flex; 
+          margin: 1px 0; 
+          font-size: 8px; 
+          line-height: 1.3; 
         }
-        .col-desc { flex: 2.2; }
-        .col-qty { flex: 0.6; text-align: center; }
-        .col-rate { flex: 1; text-align: right; }
-        .col-amt { flex: 1; text-align: right; }
-        .item-row {
-          margin: 3px 0;
+        .col-desc { 
+          flex: 2.2; 
+          padding-right: 2px; 
+        }
+        .col-qty { 
+          flex: 0.7; 
+          text-align: center; 
+        }
+        .col-rate { 
+          flex: 0.9; 
+          text-align: right; 
+          padding-right: 2px; 
+        }
+        .col-amt { 
+          flex: 0.9; 
+          text-align: right; 
         }
 
         /* Totals */
-        .totals {
-          margin-top: 6px;
-          border-top: 1px solid #000;
-          padding-top: 3px;
-          font-size: 11px;
+        .totals { 
+          margin-top: 2px; 
+          border-top: 1px solid #000; 
+          padding-top: 2px; 
         }
-        .total-row {
-          display: flex;
-          justify-content: space-between;
-          margin: 2px 0;
+        .total-row { 
+          display: flex; 
+          justify-content: space-between; 
+          font-size: 8px; 
+          margin: 0.5px 0; 
+          line-height: 1.4; 
         }
-        .grand-total {
-          font-weight: bold;
-          margin-top: 3px;
-          padding-top: 3px;
-          border-top: 1px solid #000;
-          font-size: 12px;
+        .grand-total { 
+          border-top: 1px solid #000; 
+          padding-top: 2px; 
+          font-size: 9px; 
+          font-weight: bold; 
+          margin-top: 2px; 
+          display: flex; 
+          justify-content: space-between; 
         }
 
-        /* Bottom GST block */
-        .gst-block {
-          margin-top: 8px;
-          font-size: 10px;
+        /* GST Block */
+        .gst-block { 
+          font-size: 7px; 
+          text-align: center; 
+          margin: 1px 0; 
+          line-height: 1.3; 
         }
         .gst-line {
-          text-align: center;
-          margin: 2px 0;
+          margin: 1px 0;
         }
-        .footer {
-          margin-top: 6px;
-          text-align: center;
-          font-size: 11px;
+
+        /* Footer */
+        .footer { 
+          font-size: 8px; 
+          text-align: center; 
+          margin-top: 2px; 
         }
       </style>
     </head>

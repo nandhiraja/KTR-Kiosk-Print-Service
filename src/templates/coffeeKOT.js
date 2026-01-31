@@ -24,101 +24,119 @@ const generateCoffeeKOT = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
     <head>
       <title>Coffee KOT - ${kot_code}</title>
       <style>
-            @page {
-          size: 80mm auto;
-          margin: 0;
-          }
+        @page { 
+          size: 80mm 160mm; 
+          margin: 0; 
+        }
+        * { 
+          margin: 0; 
+          padding: 0; 
+          box-sizing: border-box; 
+        }
+        body { 
+          font-family: 'Courier New', Courier, monospace; 
+          font-size: 9px; 
+          line-height: 1.2; 
+          padding: 4px; 
+          margin: 10px; 
+        }
+        .page { 
+          width: 76mm; 
+          margin: 0 auto; 
+        }
+        .center { 
+          text-align: center; 
+        }
 
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+        /* Header */
+        .restaurant-name { 
+          font-size: 11px; 
+          font-weight: bold; 
+          margin-bottom: 0px; 
         }
-        body {
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 13px;
-          line-height: 1.5;
-          margin: 0;
-          padding: 2px;
+
+        /* KOT Box */
+        .kot-box-wrapper { 
+          margin-top: 6px; 
+          display: flex; 
+          justify-content: center; 
         }
-        .page {
-          width: 90mm;
-          margin: 0 auto;
-          padding: 4px 6px 6px;
+        .kot-box { 
+          border: 2px solid #000; 
+          border-radius: 10px; 
+          padding: 12px 16px; 
+          display: inline-block; 
+          background: #fff8dc; 
         }
-        .center {
-          text-align: center;
+        .token-no { 
+          display: flex; 
+          flex-direction: column; 
+          align-items: center; 
+          justify-content: center; 
+          gap: 2px; 
         }
-        .restaurant-name {
-          font-size: 14px;
-          font-weight: bold;
-          margin-bottom: 6px;
+        .logo-wrapper { 
+          margin: 4px 0; 
+          display: flex; 
+          justify-content: center; 
         }
-        .kot-box-wrapper {
-          margin-top: 6px;
-          display: flex;
-          justify-content: center;
+        .kot-logo { 
+          height: 28px; 
+          width: auto; 
+          object-fit: contain; 
         }
-        .kot-box {
-          border: 2px solid #000;
-          border-radius: 10px;
-          padding: 6px 18px;
-          display: inline-block;
-          font-weight: bold;
-          font-size: 8px;
-          text-transform:uppercase;
-          background-color: #fff8dc;
+        .token-number { 
+          font-size: 32px; 
+          font-weight: 900; 
+          line-height: 1; 
         }
-        .token-no{
-            font-family: poppins;
-            font-size: 22px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column; /* Vertical stack */
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+
+        /* Info Lines */
+        .info-line { 
+          font-size: 9px; 
+          margin: 1px 0; 
+          line-height: 1.4; 
         }
-        .logo-wrapper {
-          margin: 4px 0;
-          display: flex;
-          justify-content: center;
+        .label { 
+          width: 75px; 
+          display: inline-block; 
+          font-weight: normal; 
         }
-        .kot-logo {
-          height: 28px; /* Logo size */
-          width: auto; /* Maintain aspect ratio */
-          object-fit: contain;
+
+        /* Divider */
+        .divider { 
+          border-bottom: 1px solid #000; 
+          margin: 4px 0; 
         }
-        .info-line {
-          font-size: 11px;
-          margin: 2px 0;
+
+        /* Items */
+        .items-header { 
+          font-weight: bold; 
+          border-bottom: 1px dashed #000; 
+          padding: 2px 0 3px 0; 
+          font-size: 9px; 
+          margin-top: 2px; 
         }
-        .label {
-          display: inline-block;
-          min-width: 85px;
-        }
-        .divider {
-          margin: 8px 0;
-          border-bottom: 1px dashed #666;
-        }
-        .items-header,
-        .item-row {
-          font-size: 11px;
-}
-        .items-header {
-          margin: 6px 0 4px;
-          border-bottom: 1px dashed #333;
-          padding-bottom: 3px;
-          font-weight:bold;
+        .item-row { 
+          font-size: 9px; 
+          margin: 2px 0; 
+          line-height: 1.4; 
+          border-bottom: 1px dashed #000; 
+          padding-bottom: 2px; 
         }
         .items-header span:first-child,
-        .item-row span:first-child {
-          display: inline-block;
-          width: 30px;
+        .item-row span:first-child { 
+          display: inline-block; 
+          width: 32px; 
+          font-weight: normal; 
         }
-        .instruction-title {
-          margin-top: 10px;
-          font-size: 11px;
+
+        /* Instruction */
+        .instruction-title { 
+          font-size: 10px; 
+          font-weight: bold; 
+          margin-top: 6px; 
+          text-align: center; 
         }
       </style>
     </head>

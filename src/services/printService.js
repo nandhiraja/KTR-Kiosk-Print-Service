@@ -130,18 +130,16 @@ class PrintService {
 
             // Get dynamic settings
             const layout = settingsManager.getPrintLayout();
-            const margins = settingsManager.getMargins();
 
-            // SPEED OPTIMIZATION: Generate PDF immediately, no waiting
+            // CRITICAL FIX: Let CSS @page control everything, just like browser print!
+            // Don't override with Puppeteer settings - that's what causes white space
             const pdfBuffer = await page.pdf({
-                format: 'A4',
-                width: layout.pageWidth,
-                margin: margins,
+                // Remove format, width, margin - let CSS @page handle it
                 printBackground: true,
-                preferCSSPageSize: true,
-                scale: layout.scale,
+                preferCSSPageSize: true,  // MUST be true to respect @page
+                scale: layout.scale,       // Only apply scale from settings
                 displayHeaderFooter: false,
-                timeout: 10000  // Faster PDF generation timeout
+                timeout: 10000
             });
 
             logger.info(`PDF generated: ${(pdfBuffer.length / 1024).toFixed(2)} KB`);

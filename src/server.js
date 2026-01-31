@@ -104,6 +104,7 @@ app.get('/print/health', async (req, res) => {
 
 // Print routes
 app.use('/print', printRoutes);
+app.use('/print/escpos', require('./routes/escpos.routes'));  // ESC/POS test routes
 app.use('/', require('./routes/admin.routes'));
 
 // Error handling middleware
