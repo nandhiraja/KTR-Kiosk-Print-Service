@@ -31,25 +31,14 @@ module.exports = {
     // Chrome executable path (auto-detected or from environment)
     CHROME_PATH: process.env.CHROME_PATH || chromePath,
 
-    // Printer settings for 58mm thermal printer (Roll Paper)
+    // Printer settings - minimal config, let CSS @page handle sizing
     PRINTER_CONFIG: {
-        // Page settings
-        format: 'A4', // Will be overridden by CSS @page
-        width: '58mm',
-        margin: {
-            top: '0mm',
-            right: '0mm',
-            bottom: '0mm',
-            left: '0mm'
-        },
-
         // Print settings
         printBackground: true,
-        preferCSSPageSize: true,
-
-        // Scale and quality - INCREASED to 1.4 to zoom in for thermal printer
-        scale: 1.4,  // Scale up entire page by 40% for thermal paper readability
+        preferCSSPageSize: true,  // CRITICAL - respect CSS @page for all sizing
         displayHeaderFooter: false
+        // NOTE: Do NOT add format, width, margin, or scale here
+        // All sizing is controlled by CSS @page in templates
     },
 
     // Puppeteer settings

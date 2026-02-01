@@ -122,6 +122,10 @@ class PrintService {
         const page = await this.browser.newPage();
 
         try {
+            // QUALITY OPTIMIZATION: Set high DPI (300 DPI support)
+            // Simulates ~300 DPI for thermal printers (58mm/80mm)
+            await page.setViewport({ width: 350, height: 800, deviceScaleFactor: 2.0 });
+
             // SPEED OPTIMIZATION: Use domcontentloaded and minimal timeout
             await page.setContent(htmlContent, {
                 waitUntil: 'domcontentloaded',  // Don't wait for network - static HTML only
@@ -133,11 +137,12 @@ class PrintService {
 
             // CRITICAL FIX: Let CSS @page control everything, just like browser print!
             // Don't override with Puppeteer settings - that's what causes white space
+            // QUALITY: Device scale factor + high-quality fonts = crisp 300 DPI output
             const pdfBuffer = await page.pdf({
                 // Remove format, width, margin - let CSS @page handle it
                 printBackground: true,
                 preferCSSPageSize: true,  // MUST be true to respect @page
-                scale: layout.scale,       // Only apply scale from settings
+                scale: layout.scale,       // Only apply scale from settings (should be 1.0)
                 displayHeaderFooter: false,
                 timeout: 10000
             });
@@ -205,6 +210,8 @@ class PrintService {
                 args.push('-print-to-default');
             }
             args.push('-silent');
+            // CRITICAL FIX: Prevent SumatraPDF from shrinking content to 'fit' page
+            args.push('-print-settings', 'noscale');
             args.push(filePath);
 
             // 3. Execute printing

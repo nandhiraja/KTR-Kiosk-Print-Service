@@ -12,34 +12,39 @@ const generateKOTBill = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
     <head>
       <title>KOT - ${kot_code}</title>
       <style>
-            @page {
-          size: 58mm auto;  /* width 58mm for thermal roll paper, height auto */
-          margin: 0;  /* Remove all margins */
-          }
-
+        @page {
+          size: 58mm auto;
+          margin: 0;
+        }
+        html {
+          margin: 0;
+          padding: 0;
+        }
         * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
         }
         body {
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 14px;
-          line-height: 1.4;
+          font-family: 'Courier New', Courier, monospace;
+          font-size: 10px;
+          font-weight: 500;
+          line-height: 1.3;
+          padding: 2mm;
           margin: 0;
-          padding: 2px;
+          width: 58mm;
         }
         .page {
-          width: 58mm;
-          margin: 0 auto;
-          padding: 2px 4px 4px;
+          width: 100%;
+          margin: 0;
+          padding: 0;
         }
         .center {
           text-align: center;
         }
         .restaurant-name {
-          font-size: 16px;
-          font-weight: bold;
+          font-size: 12px;
+          font-weight: 900;
           margin-bottom: 4px;
         }
         .kot-box-wrapper {
@@ -68,7 +73,7 @@ const generateKOTBill = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
         .label {
           display: inline-block;
           min-width: 70px;
-          font-weight: bold;
+          font-weight: 600;
         }
         .divider {
           margin: 6px 0;
@@ -76,27 +81,28 @@ const generateKOTBill = (orderId, kot_code, KDSInvoiceId, orderDetails) => {
         }
         .items-header,
         .item-row {
-          font-size: 13px;
+          font-size: 10px;
+          font-weight: 500;
         }
         .items-header {
           margin: 4px 0 3px;
           border-bottom: 1px dashed #333;
           padding-bottom: 2px;
-          font-weight: bold;
+          font-weight: 700;
         }
         .items-header span:first-child,
         .item-row span:first-child {
           display: inline-block;
           width: 30px;
-          font-weight: bold;
+          font-weight: 600;
         }
         .item-row {
           margin: 3px 0;
         }
         .instruction-title {
           margin-top: 8px;
-          font-size: 12px;
-          font-weight: bold;
+          font-size: 11px;
+          font-weight: 700;
         }
       </style>
     </head>

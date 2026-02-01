@@ -24,7 +24,7 @@ class SettingsManager {
             printerName: null, // null means default system printer
             // Print Layout Settings
             printLayout: {
-                scale: 1.4,           // Default scale for thermal printer
+                scale: 1.0,           // Let CSS handle sizing - no scaling
                 pageWidth: '58mm',    // Paper width
                 marginTop: '0mm',
                 marginRight: '0mm',
